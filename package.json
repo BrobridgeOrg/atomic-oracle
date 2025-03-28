@@ -1,0 +1,24 @@
+{
+  "name": "atomic-oracle",
+  "version": "0.0.1",
+  "description": "Oracle Database module for Brobridge Atomic",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "oracle",
+    "node-red",
+    "atomic"
+  ],
+  "author": "Fred Chien <fred@brobridge.com>",
+  "license": "APL",
+  "node-red": {
+    "nodes": {
+      "oracle-connection": "oracle-connection.js",
+      "oracle-execute": "oracle-execute.js"
+    }
+  },
+  "dependencies": {
+    "oracledb": "^6.8.0"
+  }
+}

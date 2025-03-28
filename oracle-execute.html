@@ -1,0 +1,415 @@
+<script src="resources/atomic-oracle/jquery-resizable.min.js"></script>
+<script src="resources/atomic-oracle/ag-grid-community.min.noStyle.js"></script>
+<link rel="stylesheet" href="resources/atomic-oracle/ag-grid.css"/>
+<link rel="stylesheet" href="resources/atomic-oracle/ag-theme-alpine.css"/>
+<script type="text/javascript">
+
+	RED.nodes.registerType('Oracle Execute', {
+		category: 'Database',
+		color: '#006ebb',
+		credentials: {
+		},
+		defaults: {
+			name: {
+				value: ''
+			},
+			connection: {
+				value: '',
+				type: "Oracle Connection"
+			},
+			querySource: {
+				value: 'auto',
+				required: true
+			},
+			command: {
+				value: ''
+			},
+			outputPropType: {
+				value: 'msg'
+			},
+			outputProp: {
+				value: 'payload'
+			}
+		},
+		inputs: 1,
+		outputs: 1,
+		icon: 'db.png',
+		label: function() {
+			return this.name || 'Oracle Execute';
+		},
+		oneditprepare: function() {
+
+			let node = this;
+
+			// Tabs
+			var tabs = RED.tabs.create({
+				id: "func-tabs",
+				onchange: function(tab) {
+					$("#func-tabs-content").children().hide();
+					$("#" + tab.id).show();
+
+					switch(tab.id) {
+					case 'func-tab-playground':
+						$('.node-playground-layout-top').resizableSafe({
+							handleSelector: ".splitter-horizontal",
+							resizeWidth: false,
+							onDrag: function(e, $el, newWidth, newHeight, opt) {
+
+								let margin = 45;
+								let editorHeight = newHeight - margin; 
+
+								// min height
+								if (newHeight <= 150) {
+									editorHeight = 150 - margin;
+								}
+
+								// max height
+								let maxHeight = $('#node-playground').height() - 300;
+								if (editorHeight >= maxHeight - margin) {
+									editorHeight = maxHeight - margin;
+								}
+
+								// Update editor size
+								$('#node-input-playground-editor').css('height', editorHeight  + 'px')
+								node.playgroundEditor.resize();
+
+								return false;
+							}
+						});
+						break;
+					default:
+					}
+				}
+			});
+			tabs.addTab({
+				id: "func-tab-config",
+				iconClass: "fa fa-code",
+				label: 'Query Command'
+			});
+			tabs.addTab({
+				id: "func-tab-playground",
+				iconClass: "fa fa-search",
+				label: 'SQL Playground'
+			});
+
+			// Query source
+			function updateQuerySourceOptions() {
+
+				switch($('#node-input-querySource').val()) {
+				case 'dynamic':
+					$('#node-row-command').hide();
+					break;
+				default:
+					$('#node-row-command').show();
+				}
+			}
+
+            $("#node-input-querySource").on("change", function() {
+				updateQuerySourceOptions();
+            });
+
+			if (!this.querySource) {
+				this.querySource = 'auto';
+				$('#node-input-querySource').val(this.querySource);
+			}
+
+			this.editor = RED.editor.createEditor({
+				id: 'node-input-command-editor',
+				mode: 'ace/mode/sql',
+				value: this.command
+			});
+
+			$('#node-query-expand').click(function(e) {
+				e.preventDefault();
+				const value = node.editor.getValue();
+				RED.editor.editJavaScript({
+					title: 'Edit SQL Query',
+					value: value,
+					width: 'Infinity',
+					cursor: node.editor.getCursorPosition(),
+					mode: 'ace/mode/sql',
+					complete: function(v, cursor) {
+						node.editor.setValue(v, -1);
+						node.editor.gotoLine(cursor.row + 1, cursor.column, false);
+						setTimeout(function() {
+							node.editor.focus();
+						}, 300);
+					}
+				});
+			});
+
+			// Output property
+			let outputProp = this.outputProp || 'payload';
+
+			$("#node-input-typed-outputProp")
+				.typedInput({
+					type: 'msg',
+					types: [ 'msg' ],
+					typeField: '#node-input-outputPropType',
+				})
+				.typedInput('type', this.outputPropType || 'msg')
+				.typedInput('value', outputProp);
+
+			// Playground
+			let playgroundEditor = RED.editor.createEditor({
+				id: 'node-input-playground-editor',
+				mode: 'ace/mode/sql'
+			});
+
+			node.playgroundEditor = playgroundEditor;
+
+			$('#node-playground-run').click(function(e) {
+
+				// Do nothing
+				if (!playgroundEditor.getValue()) {
+					return;
+				}
+
+				$('#node-playground-result-table').empty();
+
+				let headers = {}
+
+				// Getting token information from local storage
+				let authInfo = localStorage.getItem('auth-tokens');
+				if (authInfo != null) {
+					let tokenInfo = JSON.parse(localStorage.getItem('auth-tokens'));
+					headers.Authorization = 'Bearer ' + tokenInfo.access_token;
+				}
+
+				$.ajax({
+					method: 'POST',
+					dataType: 'json',
+					cache: false,
+					url: '/nodes/atomic-oracle/apis/execute',
+					data: {
+						connection: node.connection,
+						query: playgroundEditor.getValue()
+					},
+					headers: headers,
+					success: function(data) {
+						$('#node-playground-result-message').hide().empty();
+
+						// Error
+						if (!data.success) {
+							$('#node-playground-result-message')
+								.append($('<div>').text('Finished with error.'))
+								.append($('<div>').text([
+									'Msg ' + data.error.number,
+									'Level ' + data.error.class,
+									'State ' + data.error.state,
+								].join(',')))
+								.append($('<div>').text('Line ' + data.error.lineNumber + ': ' + data.error.message))
+								.show();
+
+							return;
+						}
+
+						if (!data.results.length) {
+
+							// Delete or Insert
+							if (data.rowsAffected.length) {
+								$('#node-playground-result-message')
+									.append($('<div>').text('Finished.'))
+									.append($('<div>').text('Statement completed successfully. (' + data.rowsAffected[0] + ' rows affected)'))
+									.show();
+							}
+
+							return;
+						}
+
+						// Rendering table to show results
+						let gridOptions = {
+							defaultColDef: {
+								resizable: true,
+							},
+							columnDefs: Object.keys(data.results[0]).map((key) => {
+								return {
+									headerName: key,
+									field: key
+								};
+							}),
+							rowData: data.results
+						};
+
+						var eGridDiv = document.querySelector('#node-playground-result-table');
+						new agGrid.Grid(eGridDiv, gridOptions);
+
+						// Auto-resize
+						const allColumnIds = [];
+						gridOptions.columnApi.getColumns().forEach((column) => {
+							allColumnIds.push(column.getId());
+						});
+
+						gridOptions.columnApi.autoSizeColumns(allColumnIds, false);
+
+					}
+				});
+			});
+		},
+		oneditsave: function() {
+			this.command = this.editor.getValue();
+			this.editor.destroy();
+			delete this.editor;
+
+			$("#node-input-outputPropType").val($("#node-input-typed-outputProp").typedInput('type'));
+			$("#node-input-outputProp").val($("#node-input-typed-outputProp").typedInput('value'));
+		},
+		oneditcancel: function() {
+			this.editor.destroy();
+			delete this.editor;
+		},
+	});
+</script>
+
+<style>
+
+.ag-theme-alpine-dark {
+    --ag-grid-size: 4px;
+    --ag-list-item-height: 20px;
+	--ag-font-size: 12px;
+}
+
+.node-playground-container-vertical {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+/*	height: calc(100% - 500px);*/
+/*	border: 1px solid silver;*/
+	overflow: hidden;
+}
+
+.node-playground-layout-top {
+	flex: 0 0 auto;
+	min-height: 150px;
+	width: 100%;
+	white-space: nowrap;
+	color: white;
+}
+
+.node-playground-layout-bottom {
+	flex: 1 1 auto;
+	min-height: 200px;
+}
+
+.splitter-horizontal {
+	flex: 0 0 auto;
+	height: 8px;
+	cursor: row-resize;
+}
+
+.node-playground-sql-editor {
+	position: relative;
+}
+
+.node-playground-sql-editor-toolbar {
+	display: block;
+	width: 100%;
+	min-height: 40px;
+	padding: 5px;
+	box-sizing: border-box;
+	box-shadow: 7px 0 7px rgba(0,0,0,.5);
+}
+
+.node-playground-toolbar-button {
+	float: right;
+	min-width: 100px;
+	min-height: 30px;
+	border-radius: 5px;
+	border: 0px;
+}
+
+.node-playground-sql-editor-container {
+	display: block;
+	width: 100%;
+	margin-top: 5px;
+}
+
+#node-playground-result {
+	background: rgba(0,0,0,.1);
+}
+
+.node-playground-result-message {
+	display: none;
+	padding: 10px;
+}
+
+.node-playground-result-table {
+	width: 100%;
+	height: calc(100% - 2px);
+}
+
+</style>
+
+<script type="text/x-red" data-template-name="Oracle Execute">
+	<div class="form-row">
+        <label for="node-input-name" style="width: 130px"><i class="fa fa-stack-exchange"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-connection" style="width: 130px"><i class="fa fa-globe"></i> Connection</label>
+        <input type="text" id="node-input-connection">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-outputProp" style="width: 130px"><i class="fa fa-sign-out"></i> Output Property</label>
+		<input type="text" id="node-input-typed-outputProp">
+        <input type="hidden" id="node-input-outputPropType">
+        <input type="hidden" id="node-input-outputProp">
+    </div>
+
+    <div class="form-row func-tabs-row">
+        <ul style="min-width: 600px; margin-bottom: 20px;" id="func-tabs"></ul>
+    </div>
+
+    <div id="func-tabs-content" style="min-height: calc(100% - 150px); position: relative;">
+
+        <div id="func-tab-config" style="display:none">
+			<div class="form-row">
+				<label for="node-input-querySource" style="width: 130px"><i class="fa fa-code"></i> Query Source</label>
+				<select id="node-input-querySource" style='width:70%'>
+					<option value="auto">Auto</option>
+					<option value="static">Static SQL Command</option>
+					<option value="dynamic">From msg.query</option>
+				</select>
+
+				<div style="float: right;position: relative;margin-top: 9px; padding: 5px;">
+					<button id="node-query-expand" class="editor-button editor-button-small" title="Expand query editor"><i class="fa fa-expand"></i></button>
+				</div>
+
+				<div id="node-row-command" style="margin-top: 10px;">
+					<div class="form-row">
+						<div style="height: 250px; min-height:150px;" class="node-text-editor" id="node-input-command-editor"></div>
+					</div>
+				</div>
+			</div>
+        </div>
+
+        <div id="func-tab-playground" style="display:none; position: absolute; height: 100%; width: 100%;">
+
+			<div id="node-playground" class="node-playground-container-vertical">
+
+				<div class="node-playground-sql-editor node-playground-layout-top" id="node-playground-sql-editor">
+
+					<div class="node-playground-sql-editor-toolbar">
+						<button id="node-playground-run" class="node-playground-toolbar-button"><i class="fa fa-play"></i> Run</button>
+					</div>
+
+					<div class="node-playground-sql-editor-container">
+						<div style="height: 250px;" class="node-playground-sql-editor-editable node-text-editor" id="node-input-playground-editor"></div>
+					</div>
+				</div>
+
+				<div class="splitter-horizontal"></div>
+
+				<div class="node-playground-layout-bottom" id="node-playground-result">
+					<div id="node-playground-result-message" class="node-playground-result-message"></div>
+					<div id="node-playground-result-table" class="node-playground-result-table ag-theme-alpine-dark"></div>
+				</div>
+			</div>
+        </div>
+	</div>
+</script>
+
+<script type="text/html" data-help-name="Oracle Execute">
+	<p>Execute queries in Oracle Database</p>
+</script>

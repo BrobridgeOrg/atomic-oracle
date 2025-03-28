@@ -1,0 +1,116 @@
+<script type="text/javascript">
+    RED.nodes.registerType('Oracle Connection',{
+        category: 'config',
+		credentials: {
+            username: {
+				type: 'text'
+			},
+            password: {
+				type: 'password'
+			},
+		},
+        defaults: {
+            name: {
+				value: '',
+			},
+            server: {
+				value: 'localhost',
+				required: true
+			},
+            port: {
+				value: 1521,
+				required: true,
+				validate: RED.validators.number()
+			},
+            database: {
+				value: '',
+				required: true
+			},
+			poolMin: {
+				value: 1,
+				required: true
+			},
+			poolMax: {
+				value: 10,
+				required: true
+			},
+			poolPingInterval: {
+				value: 60000,
+				required: true
+			},
+			poolPingTimeout: {
+				value: 5000,
+				required: true
+			},
+			connectionRetryInterval: {
+				value: 3000,
+				required: true
+			}
+        },
+        label: function() {
+            return this.name || this.server + ':' + this.port + ' - ' + this.database;
+        },
+		oneditprepare: function() {
+			$('#node-config-input-connectionRetryInterval').val(this.connectionRetryInterval || 3000);
+		}
+    });
+</script>
+
+<script type="text/x-red" data-template-name="Oracle Connection">
+    <div class="form-row">
+        <label for="node-config-input-name" style="width: 130px"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-server" style="width: 130px"><i class="fa fa-server"></i> Server</label>
+        <input type="text" id="node-config-input-server">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port" style="width: 130px"><i class="fa fa-random"></i> Port</label>
+        <input type="text" id="node-config-input-port">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-username" style="width: 130px"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-config-input-username" placeholder="sa">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password" style="width: 130px"><i class="fa fa-key"></i> Password</label>
+        <input type="password" id="node-config-input-password">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-database" style="width: 130px"><i class="fa fa-database"></i> Database</label>
+        <input type="text" id="node-config-input-database">
+    </div>
+	<hr />
+	<div class="form-row">
+		<label for="node-row-pool" style="width: 200px;font-weight: bold;">Connection Pool Options</label>
+		<div id="node-row-pool" style="margin-left: 30px; margin-top: 10px;">
+			<div class="form-row">
+				<label for="node-config-input-poolMin">Min Size</label>
+				<input type="number" id="node-config-input-poolMin" style="width:100px">
+			</div>
+			<div class="form-row">
+				<label for="node-config-input-poolMax">Max Size</label>
+				<input type="number" id="node-config-input-poolMax" style="width:100px">
+			</div>
+			<div class="form-row">
+				<label for="node-config-input-poolPingInterval">Pool PingInterval</label>
+				<input type="number" id="node-config-input-poolPingInterval" style="width:100px">
+			</div>
+			<div class="form-row">
+				<label for="node-config-input-poolPingTimeout">Pool PingTimeout</label>
+				<input type="number" id="node-config-input-poolPingTimeout" style="width:100px">
+			</div>
+		</div>
+	</div>
+	<hr />
+	<div class="form-row">
+		<label for="node-row-options" style="width: 200px;font-weight: bold;"">Connection Options</label>
+		<div id="node-row-options" style="margin-left: 30px; margin-top: 10px;">
+			<div class="form-row">
+				<label for="node-config-input-connectionRetryInterval" style="width: 150px;">Reconnect Intervals</label>
+				<input type="number" id="node-config-input-connectionRetryInterval" style="width:100px"> ms
+			</div>
+		</div>
+	</div>
+</script>
