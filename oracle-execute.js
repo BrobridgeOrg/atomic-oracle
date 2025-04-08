@@ -92,8 +92,11 @@ module.exports = function(RED) {
 
 				let { sql, binds } = genQueryCmdParameters(tpl, msg);
 				let rs = await this.conn.execute(sql, binds);
-				await this.conn.close();
-				this.conn = null
+				if (this.conn.isHealthy()){
+					await this.conn.close();
+					this.conn = null
+				};
+
 				node.status({
 					fill: 'green',
 					shape: 'dot',
@@ -124,12 +127,12 @@ module.exports = function(RED) {
 				*/
 
 				node.error(e, msg);
-				if (this.conn) {
+				if (this.conn && this.conn.isHealthy()) {
 					try{
 						await this.conn.close();
 						this.conn = null
 					} catch(e){
-						console.log(e);
+						//console.log(e);
 						//console.warn("Connection might already be closed.");
 					}
 				}
