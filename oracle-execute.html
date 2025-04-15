@@ -1,7 +1,7 @@
-<script src="resources/atomic-oracle/jquery-resizable.min.js"></script>
-<script src="resources/atomic-oracle/ag-grid-community.min.noStyle.js"></script>
-<link rel="stylesheet" href="resources/atomic-oracle/ag-grid.css"/>
-<link rel="stylesheet" href="resources/atomic-oracle/ag-theme-alpine.css"/>
+<script src="resources/@brobridge/atomic-oracle/jquery-resizable.min.js"></script>
+<script src="resources/@brobridge/atomic-oracle/ag-grid-community.min.noStyle.js"></script>
+<link rel="stylesheet" href="resources/@brobridge/atomic-oracle/ag-grid.css"/>
+<link rel="stylesheet" href="resources/@brobridge/atomic-oracle/ag-theme-alpine.css"/>
 <script type="text/javascript">
 
 	RED.nodes.registerType('Oracle Execute', {
@@ -180,7 +180,7 @@
 					method: 'POST',
 					dataType: 'json',
 					cache: false,
-					url: '/nodes/atomic-oracle/apis/execute',
+					url: '/nodes/@brobridge/atomic-oracle/apis/execute',
 					data: {
 						connection: node.connection,
 						query: playgroundEditor.getValue()

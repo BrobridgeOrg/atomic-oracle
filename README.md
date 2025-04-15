@@ -12,4 +12,4 @@ Licensed under the Apache License
 
 ## Authors
 
-Copyright(c) 2022 Fred Chien <<fred@brobridge.com>>
+Copyright(c) 2025 Jhe Sue <<jhe@brobridge.com>>

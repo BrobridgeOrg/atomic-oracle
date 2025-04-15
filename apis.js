@@ -3,7 +3,7 @@ module.exports = {
 };
 
 function init(RED) {
-	var prefix = '/nodes/atomic-oracle/apis';
+	var prefix = '/nodes/@brobridge/atomic-oracle/apis';
 
 	RED.httpAdmin.post(prefix + '/execute', RED.auth.needsPermission('flows.write'), function(req, res) {
 
