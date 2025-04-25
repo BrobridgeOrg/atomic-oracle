@@ -114,3 +114,22 @@
 		</div>
 	</div>
 </script>
+<script type="text/html" data-help-name="Oracle Connection">
+    <p>This node is used to configure the connection to an Oracle database. The connection can be shared across multiple nodes.</p>
+
+    <h4>Configuration Options</h4>
+    <ul>
+        <li><strong>Name</strong>: Identifier for this connection</li>
+        <li><strong>Server</strong>: Oracle database host (e.g., <code>localhost</code>)</li>
+        <li><strong>Port</strong>: Port number used by Oracle (default: <code>1521</code>)</li>
+        <li><strong>Username / Password</strong>: Database authentication credentials</li>
+        <li><strong>Database</strong>: Service name or SID used in the Oracle connect string</li>
+        <li><strong>Min Size</strong>: Minimum number of connections in the connection pool</li>
+        <li><strong>Max Size</strong>: Maximum number of connections in the connection pool</li>
+        <li><strong>Pool PingInterval</strong>: Time interval (in milliseconds) to validate connection health</li>
+        <li><strong>Pool PingTimeout</strong>: Timeout (in milliseconds) for each connection ping</li>
+        <li><strong>Reconnect Interval</strong>: Time interval (in milliseconds) for retrying connection if lost</li>
+    </ul>
+
+    <p>Once configured, this connection can be selected in other Oracle nodes to perform queries or operations.</p>
+</script>

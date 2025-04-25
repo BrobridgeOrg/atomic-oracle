@@ -55,7 +55,6 @@ module.exports = function(RED) {
 		this.config.outputProp = config.outputProp || 'payload';
 		this.tpl = sanitizedCmd(node.config.command) || '';
 		this.onStop = false;
-		this.conn = null;
 
 		if (!this.connection) {
 			node.status({
@@ -81,9 +80,10 @@ module.exports = function(RED) {
 				tpl = sanitizedCmd(msg.query);
 			}
 
+			let conn = null;
 			try {
-				this.conn = await this.connection.getConn()
-				this.conn.callTimeout = 500;
+				conn = await this.connection.getConn()
+				//conn.callTimeout = 1000;
 				node.status({
 					fill: 'blue',
 					shape: 'dot',
@@ -91,12 +91,7 @@ module.exports = function(RED) {
 				});
 
 				let { sql, binds } = genQueryCmdParameters(tpl, msg);
-				let rs = await this.conn.execute(sql, binds);
-				if (this.conn.isHealthy()){
-					await this.conn.close();
-					this.conn = null
-				};
-
+				let rs = await conn.execute(sql, binds);
 				node.status({
 					fill: 'green',
 					shape: 'dot',
@@ -120,17 +115,22 @@ module.exports = function(RED) {
 					text: e.toString()
 				});
 
-				/*
-				node.send({
-					error: e.toString()
-				})
-				*/
+				if (!msg.error) {
+					msg.error = {
+						code: e.errorNum || null,
+						message: e.message || null,
+						stack: e.stack || null,
+						lineNumber: e.offset || null,
+					};
+				}
 
-				node.error(e, msg);
-				if (this.conn && this.conn.isHealthy()) {
+				node.error(e);
+				done(e)
+			} finally {
+				if (conn) {
 					try{
-						await this.conn.close();
-						this.conn = null
+						await conn.close();
+						conn = null
 					} catch(e){
 						//console.log(e);
 						//console.warn("Connection might already be closed.");
@@ -141,6 +141,7 @@ module.exports = function(RED) {
 
 		node.on('close', async () => {
 			this.onStop=true;
+			/*
 				if (this.conn) {
 					try{
 						await this.conn.close();
@@ -149,6 +150,7 @@ module.exports = function(RED) {
 						//console.warn("Connection might already be closed.");
 					}
 				}
+			*/
 		});
 	}
 

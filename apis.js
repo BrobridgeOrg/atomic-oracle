@@ -30,10 +30,10 @@ function init(RED) {
 				res.json({
 					success: false,
 					error: {
-						state: e.code,
-						number: e.errorNum,
-						lineNumber: e.offset,
-						message: e.message
+						code: e.errorNum || null,
+						message: e.message || null,
+						stack: e.stack || null,
+						lineNumber: e.offset || null,
 					}
 				});
 			}
@@ -47,23 +47,32 @@ function request(connection, query) {
 
 		//Get connection pool
 		let conn = await connection.getConn();
-		conn.callTimeout = 500;
+		//conn.callTimeout = 500;
 		// use query stream
 		let stream = conn.queryStream(query);
 
 		let rows = [];
-		stream.on('error', err =>{
+		stream.on('error', async err =>{
+			stream.destroy();
+			try {
+				await conn.close();
+			} catch (e) {
+				console.warn("conn.close() failed during error handling:", e);
+			}
 			reject(err);
-			conn.close().then((err) => {
-				console.log(err);
-			});
 		})
 
-		stream.on('data', row => {
+		stream.on('data', async row => {
 
 			// Do not return results which are more than 1,000
 			if (rows.length == 1000) {
-				stream.pause();
+				//stream.pause();
+				stream.destroy();
+				try {
+					await conn.close();
+				} catch (e) {
+					console.warn("conn.close() failed during error handling:", e);
+				}
 				resolve({
 					finished: false,
 					recordset: rows,
@@ -76,16 +85,18 @@ function request(connection, query) {
 			rows.push(row);
 		});
 
-		stream.on('end', () => {
+		stream.on('end', async () => {
+			stream.destroy();
+			try {
+				await conn.close();
+			} catch (e) {
+				console.warn("conn.close() failed during error handling:", e);
+			}
 			resolve({
 				finished: true,
 				recordset: rows,
 			//	rowsAffected: rowsAffected,
 			//	output: result.output,
-			});
-			stream.destroy();
-			conn.close().then((err) => {
-				//console.log(err);
 			});
 		});
 	});

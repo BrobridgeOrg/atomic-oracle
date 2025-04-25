@@ -1,0 +1,427 @@
+[
+    {
+        "id": "7cc4d621e94404ae",
+        "type": "debug",
+        "z": "89e09f9dbd32254b",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "cf007f4ad8da5748",
+        "type": "inject",
+        "z": "89e09f9dbd32254b",
+        "name": "Create table",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"col_tinyint\":75,\"col_smallint\":2575,\"col_mediumint\":4640552,\"col_int\":917793014,\"col_integer\":1009064231,\"col_bigint\":1139026116863759100,\"col_decimal\":25266.16044,\"col_dec\":20552.39025,\"col_numeric\":87777.93907,\"col_fixed\":65824.96203,\"col_float\":18970.19217,\"col_double\":12720.27281,\"col_double_precision\":48528.08791,\"col_real\":19520.87148,\"col_date\":\"2024-08-05\",\"col_datetime\":\"2024-08-05 12:34:56\",\"col_timestamp\":\"2024-08-05 12:34:56\",\"col_time\":\"12:34:56\",\"col_year\":2024,\"col_char\":\"X\",\"col_varchar\":\"Fake varchar data\",\"col_binary\":\"66616B652062696E617279\",\"col_varbinary\":\"66616B652076617262696E617279\",\"col_blob\":\"626C6F62\",\"col_tinyblob\":\"74696E79\",\"col_mediumblob\":\"6D656469756D\",\"col_longblob\":\"6C6F6E67\",\"col_text\":\"some text\",\"col_tinytext\":\"tiny text\",\"col_mediumtext\":\"medium text content\",\"col_longtext\":\"very long text content here\",\"col_enum\":\"value1\",\"col_set\":\"value1,value2\",\"col_json\":\"{\\\"example\\\": \\\"value\\\"}\",\"col_geometry\":\"POINT(1 1)\",\"col_point\":\"POINT(1 1)\",\"col_linestring\":\"LINESTRING(0 0, 1 1)\",\"col_polygon\":\"POLYGON((0 0, 1 1, 1 0, 0 0))\",\"col_multipoint\":\"MULTIPOINT((0 0), (1 1))\",\"col_multilinestring\":\"MULTILINESTRING((0 0, 1 1), (1 1, 2 2))\",\"col_multipolygon\":\"MULTIPOLYGON(((0 0, 1 1, 1 0, 0 0)), ((2 2, 3 3, 3 2, 2 2)))\",\"col_geometrycollection\":\"GEOMETRYCOLLECTION(POINT(1 1), LINESTRING(0 0, 1 1))\"}",
+        "payloadType": "json",
+        "x": 190,
+        "y": 80,
+        "wires": [
+            [
+                "34d37709b899e905"
+            ]
+        ]
+    },
+    {
+        "id": "01c08f31921ceda2",
+        "type": "debug",
+        "z": "89e09f9dbd32254b",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "db7de42cda5de777",
+        "type": "catch",
+        "z": "89e09f9dbd32254b",
+        "name": "",
+        "scope": [
+            "34d37709b899e905"
+        ],
+        "uncaught": false,
+        "x": 650,
+        "y": 140,
+        "wires": [
+            [
+                "3c54fc9639c9ef02"
+            ]
+        ]
+    },
+    {
+        "id": "3c54fc9639c9ef02",
+        "type": "debug",
+        "z": "89e09f9dbd32254b",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "62e1604424c8cee0",
+        "type": "inject",
+        "z": "89e09f9dbd32254b",
+        "name": "Drop table",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"col_tinyint\":75,\"col_smallint\":2575,\"col_mediumint\":4640552,\"col_int\":917793014,\"col_integer\":1009064231,\"col_bigint\":1139026116863759100,\"col_decimal\":25266.16044,\"col_dec\":20552.39025,\"col_numeric\":87777.93907,\"col_fixed\":65824.96203,\"col_float\":18970.19217,\"col_double\":12720.27281,\"col_double_precision\":48528.08791,\"col_real\":19520.87148,\"col_date\":\"2024-08-05\",\"col_datetime\":\"2024-08-05 12:34:56\",\"col_timestamp\":\"2024-08-05 12:34:56\",\"col_time\":\"12:34:56\",\"col_year\":2024,\"col_char\":\"X\",\"col_varchar\":\"Fake varchar data\",\"col_binary\":\"66616B652062696E617279\",\"col_varbinary\":\"66616B652076617262696E617279\",\"col_blob\":\"626C6F62\",\"col_tinyblob\":\"74696E79\",\"col_mediumblob\":\"6D656469756D\",\"col_longblob\":\"6C6F6E67\",\"col_text\":\"some text\",\"col_tinytext\":\"tiny text\",\"col_mediumtext\":\"medium text content\",\"col_longtext\":\"very long text content here\",\"col_enum\":\"value1\",\"col_set\":\"value1,value2\",\"col_json\":\"{\\\"example\\\": \\\"value\\\"}\",\"col_geometry\":\"POINT(1 1)\",\"col_point\":\"POINT(1 1)\",\"col_linestring\":\"LINESTRING(0 0, 1 1)\",\"col_polygon\":\"POLYGON((0 0, 1 1, 1 0, 0 0))\",\"col_multipoint\":\"MULTIPOINT((0 0), (1 1))\",\"col_multilinestring\":\"MULTILINESTRING((0 0, 1 1), (1 1, 2 2))\",\"col_multipolygon\":\"MULTIPOLYGON(((0 0, 1 1, 1 0, 0 0)), ((2 2, 3 3, 3 2, 2 2)))\",\"col_geometrycollection\":\"GEOMETRYCOLLECTION(POINT(1 1), LINESTRING(0 0, 1 1))\"}",
+        "payloadType": "json",
+        "x": 180,
+        "y": 220,
+        "wires": [
+            [
+                "15ddf57bff59ca98"
+            ]
+        ]
+    },
+    {
+        "id": "e2722e0e3d2c0195",
+        "type": "debug",
+        "z": "89e09f9dbd32254b",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "2e4c5a583e4e7fc2",
+        "type": "catch",
+        "z": "89e09f9dbd32254b",
+        "name": "",
+        "scope": [
+            "15ddf57bff59ca98"
+        ],
+        "uncaught": false,
+        "x": 650,
+        "y": 280,
+        "wires": [
+            [
+                "fc5fd15c75265a3f"
+            ]
+        ]
+    },
+    {
+        "id": "fc5fd15c75265a3f",
+        "type": "debug",
+        "z": "89e09f9dbd32254b",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "5473d928a0b63753",
+        "type": "inject",
+        "z": "89e09f9dbd32254b",
+        "name": "Select",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 500,
+        "wires": [
+            [
+                "15b05d08c7581216"
+            ]
+        ]
+    },
+    {
+        "id": "7d366a41eca3cf88",
+        "type": "debug",
+        "z": "89e09f9dbd32254b",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "4e090665c8106782",
+        "type": "catch",
+        "z": "89e09f9dbd32254b",
+        "name": "",
+        "scope": [
+            "92dfa6fba598ac6e"
+        ],
+        "uncaught": false,
+        "x": 650,
+        "y": 420,
+        "wires": [
+            [
+                "9dd5d20e449348e7"
+            ]
+        ]
+    },
+    {
+        "id": "9dd5d20e449348e7",
+        "type": "debug",
+        "z": "89e09f9dbd32254b",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "e6ed92e9cc9fb7ff",
+        "type": "catch",
+        "z": "89e09f9dbd32254b",
+        "name": "",
+        "scope": [
+            "15b05d08c7581216"
+        ],
+        "uncaught": false,
+        "x": 650,
+        "y": 560,
+        "wires": [
+            [
+                "297613ee440acb14"
+            ]
+        ]
+    },
+    {
+        "id": "297613ee440acb14",
+        "type": "debug",
+        "z": "89e09f9dbd32254b",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "34d37709b899e905",
+        "type": "Oracle Execute",
+        "z": "89e09f9dbd32254b",
+        "name": "",
+        "connection": "fc20fc081097ba83",
+        "querySource": "auto",
+        "command": "CREATE TABLE all_data_types (                                                                                                                            \n        number_col NUMBER, -- 通用数字类型，适用于整数和小数\n        binary_float_col BINARY_FLOAT, -- 单精度浮点数\n        binary_double_col BINARY_DOUBLE, -- 双精度浮点数\n        float_col FLOAT, -- 浮点数\n        integer_col INTEGER, -- 整数类型\n        smallint_col SMALLINT, -- 小整数类型\n        decimal_col DECIMAL(38, 37), -- 精确小数类型\n        numeric_col NUMERIC(38, 37), -- 数字类型\n        char_col CHAR(50), -- 固定长度字符\n        varchar2_col VARCHAR2(50), -- 可变长度字符\n        nchar_col NCHAR(50), -- 固定长度国家字符集\n        nvarchar2_col NVARCHAR2(50), -- 可变长度国家字符集\n        clob_col CLOB, -- 字符大对象\n        nclob_col NCLOB, -- 国家字符集字符大对象\n        blob_col BLOB, -- 二进制大对象\n        raw_col RAW(2000), -- 原始二进制数据\n        long_col LONG, -- 用于存储可变长度的字符数据，最多可存储 2GB 的字符数据不可以跟LONG RAW同時存在\n        date_col DATE, -- 日期类型\n        timestamp_col TIMESTAMP, -- 时间戳类型\n        timestamp_tz_col TIMESTAMP WITH TIME ZONE, -- 带时区的时间戳\n        timestamp_ltz_col TIMESTAMP WITH LOCAL TIME ZONE, -- 带本地时区的时间戳\n        interval_ym_col INTERVAL YEAR TO MONTH, -- 年到月的时间间隔\n        interval_ds_col INTERVAL DAY TO SECOND -- 日到秒的时间间隔\n)",
+        "outputPropType": "msg",
+        "outputProp": "payload",
+        "x": 660,
+        "y": 80,
+        "wires": [
+            [
+                "01c08f31921ceda2"
+            ]
+        ]
+    },
+    {
+        "id": "15ddf57bff59ca98",
+        "type": "Oracle Execute",
+        "z": "89e09f9dbd32254b",
+        "name": "",
+        "connection": "fc20fc081097ba83",
+        "querySource": "auto",
+        "command": "DROP TABLE all_data_types",
+        "outputPropType": "msg",
+        "outputProp": "payload",
+        "x": 660,
+        "y": 220,
+        "wires": [
+            [
+                "e2722e0e3d2c0195"
+            ]
+        ]
+    },
+    {
+        "id": "761d90e74a07218c",
+        "type": "inject",
+        "z": "89e09f9dbd32254b",
+        "name": "insert",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"NUMBER_COL\":12345,\"BINARY_FLOAT_COL\":1.23001,\"BINARY_DOUBLE_COL\":1.23456789,\"FLOAT_COL\":1.23,\"INTEGER_COL\":123,\"SMALLINT_COL\":12,\"DECIMAL_COL\":5.123456789012345,\"NUMERIC_COL\":1.1234567890123457,\"CHAR_COL\":\"A                                                 \",\"VARCHAR2_COL\":\"This is a varchar2 string\",\"NCHAR_COL\":\"N                                                 \",\"NVARCHAR2_COL\":\"This is a nvarchar2 string\",\"CLOB_COL\":\"This is a clob string\",\"NCLOB_COL\":\"This is a nclob string\",\"BLOB_COL\":\"This is a blob\",\"RAW_COL\":\"This is a raw data\",\"LONG_COL\":\"This is a long  data\",\"DATE_COL\":\"2024-12-26T16:00:00.000Z\",\"TIMESTAMP_COL\":\"2024-12-27T00:06:49.000Z\",\"TIMESTAMP_TZ_COL\":\"2024-12-27 08:06:49.000 +0000\",\"TIMESTAMP_LTZ_COL\":\"2024-12-26T16:06:49.000Z\",\"INTERVAL_YM_COL\":\"2-6\",\"INTERVAL_DS_COL\":\"5 12:30:45.678\"}",
+        "payloadType": "json",
+        "x": 170,
+        "y": 360,
+        "wires": [
+            [
+                "aeeb055969c0a63f"
+            ]
+        ]
+    },
+    {
+        "id": "aeeb055969c0a63f",
+        "type": "function",
+        "z": "89e09f9dbd32254b",
+        "name": "data process",
+        "func": "msg.payloadBak = {\n    NUMBER_COL: msg.payload.NUMBER_COL || null,        // NUMBER_COL\n    BINARY_FLOAT_COL: msg.payload.BINARY_FLOAT_COL || null,  // BINARY_FLOAT_COL\n    BINARY_DOUBLE_COL: msg.payload.BINARY_DOUBLE_COL || null, // BINARY_DOUBLE_COL\n    FLOAT_COL: msg.payload.FLOAT_COL || null,         // FLOAT_COL\n    INTEGER_COL: msg.payload.INTEGER_COL || null,       // INTEGER_COL\n    SMALLINT_COL: msg.payload.SMALLINT_COL || null,      // SMALLINT_COL\n    DECIMAL_COL: msg.payload.DECIMAL_COL || null,       // DECIMAL_COL\n    NUMERIC_COL: msg.payload.NUMERIC_COL || null,       // NUMERIC_COL\n    CHAR_COL: msg.payload.CHAR_COL || null,          // CHAR_COL (不 trim)\n    VARCHAR2_COL: msg.payload.VARCHAR2_COL || null,      // VARCHAR2_COL\n    NCHAR_COL: msg.payload.NCHAR_COL || null,         // NCHAR_COL (不 trim)\n    NVARCHAR2_COL: msg.payload.NVARCHAR2_COL || null,     // NVARCHAR2_COL\n    CLOB_COL: msg.payload.CLOB_COL || null,          // CLOB_COL\n    NCLOB_COL: msg.payload.NCLOB_COL || null,         // NCLOB_COL\n    BLOB_COL: msg.payload.BLOB_COL ? Buffer.from(msg.payload.BLOB_COL, \"hex\") : null, // BLOB_COL\n    RAW_COL: msg.payload.RAW_COL ? Buffer.from(msg.payload.RAW_COL, \"hex\") : null,  // RAW_COL\n    LONG_COL: msg.payload.LONG_COL || null,          // LONG_COL\n    DATE_COL: msg.payload.DATE_COL ? new Date(msg.payload.DATE_COL) : null, // DATE_COL\n    TIMESTAMP_COL: msg.payload.TIMESTAMP_COL ? new Date(msg.payload.TIMESTAMP_COL) : null, // TIMESTAMP_COL\n    TIMESTAMP_TZ_COL: msg.payload.TIMESTAMP_TZ_COL ? new Date(msg.payload.TIMESTAMP_TZ_COL) : null, // TIMESTAMP_TZ_COL\n    TIMESTAMP_LTZ_COL: msg.payload.TIMESTAMP_LTZ_COL ? new Date(msg.payload.TIMESTAMP_LTZ_COL) : null, // TIMESTAMP_LTZ_COL\n    INTERVAL_YM_COL: msg.payload.INTERVAL_YM_COL || null, // INTERVAL_YM_COL\n    INTERVAL_DS_COL: msg.payload.INTERVAL_DS_COL //? context.get('nanosecondsToDSInterval')(msg.payload.INTERVAL_DS_COL) : null // INTERVAL_DS_COL\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "// 部署節點後，此處的程式碼將運行一次。 \ncontext.set(\"nanosecondsToDSInterval\", function (nanoseconds) {\n    const seconds = nanoseconds / 1e9;\n    const days = Math.floor(seconds / 86400);\n    let remainingSeconds = seconds % 86400;\n    const hours = Math.floor(remainingSeconds / 3600);\n    remainingSeconds %= 3600;\n    const minutes = Math.floor(remainingSeconds / 60);\n    const secs = remainingSeconds % 60;\n    return `${days} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${secs.toFixed(6).padStart(9, '0')}`;\n});\n",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 360,
+        "wires": [
+            [
+                "92dfa6fba598ac6e"
+            ]
+        ]
+    },
+    {
+        "id": "92dfa6fba598ac6e",
+        "type": "Oracle Execute",
+        "z": "89e09f9dbd32254b",
+        "name": "",
+        "connection": "fc20fc081097ba83",
+        "querySource": "auto",
+        "command": "INSERT INTO all_data_types (\n    number_col,\n    binary_float_col,\n    binary_double_col,\n    float_col,\n    integer_col, \n    smallint_col,\n    decimal_col,\n    numeric_col,\n    char_col,\n    varchar2_col, \n    nchar_col,\n    nvarchar2_col,\n    clob_col,\n    nclob_col,\n    blob_col, \n    raw_col,\n    long_col,\n    date_col,\n    timestamp_col, \n    timestamp_tz_col,\n    timestamp_ltz_col,\n    interval_ym_col,\n    interval_ds_col\n) VALUES (\n    ${msg.payloadBak.NUMBER_COL}, -- number_col: 通用数字类型，适用于整数和小数\n    ${msg.payloadBak.BINARY_FLOAT_COL}, -- binary_float_col: 单精度浮点数\n    ${msg.payloadBak.BINARY_DOUBLE_COL}, -- binary_double_col: 双精度浮点数\n    ${msg.payloadBak.FLOAT_COL}, -- float_col: 浮点数\n    ${msg.payloadBak.INTEGER_COL}, -- integer_col: 整数类型\n    ${msg.payloadBak.SMALLINT_COL}, -- smallint_col: 小整数类型\n    ${msg.payloadBak.DECIMAL_COL}, -- decimal_col: 精确小数类型\n    ${msg.payloadBak.NUMERIC_COL}, -- numeric_col: 数字类型\n    ${msg.payloadBak.CHAR_COL}, -- char_col: 固定长度字符\n    ${msg.payloadBak.VARCHAR2_COL}, -- varchar2_col: 可变长度字符\n    ${msg.payloadBak.NCHAR_COL}, -- nchar_col: 固定长度国家字符集\n    ${msg.payloadBak.NVARCHAR2_COL}, -- nvarchar2_col: 可变长度国家字符集\n    ${msg.payloadBak.CLOB_COL}, -- clob_col: 字符大对象\n    ${msg.payloadBak.NCLOB_COL}, -- nclob_col: 国家字符集字符大对象\n    ${msg.payloadBak.BLOB_COL}, -- blob_col: 二进制大对象\n    ${msg.payloadBak.RAW_COL}, -- raw_col: 原始二进制数据\n    ${msg.payloadBak.LONG_COL}, -- long_col: 长原始二进制数据\n    ${msg.payloadBak.DATE_COL}, -- date_col: 日期类型\n    ${msg.payloadBak.TIMESTAMP_COL}, -- timestamp_col: 时间戳类型\n    ${msg.payloadBak.TIMESTAMP_TZ_COL}, -- timestamp_tz_col: 带时区的时间戳\n    ${msg.payloadBak.TIMESTAMP_LTZ_COL}, -- timestamp_ltz_col: 带本地时区的时间戳\n    ${msg.payloadBak.INTERVAL_YM_COL}, -- interval_ym_col: 年到月的时间间隔\n    ${msg.payloadBak.INTERVAL_DS_COL} -- interval_ds_col: 日到秒的时间间隔\n)\n",
+        "outputPropType": "msg",
+        "outputProp": "payload",
+        "x": 660,
+        "y": 360,
+        "wires": [
+            [
+                "7cc4d621e94404ae"
+            ]
+        ]
+    },
+    {
+        "id": "15b05d08c7581216",
+        "type": "Oracle Execute",
+        "z": "89e09f9dbd32254b",
+        "name": "",
+        "connection": "fc20fc081097ba83",
+        "querySource": "auto",
+        "command": "SELECT * FROM all_data_types",
+        "outputPropType": "msg",
+        "outputProp": "payload",
+        "x": 660,
+        "y": 500,
+        "wires": [
+            [
+                "7d366a41eca3cf88"
+            ]
+        ]
+    },
+    {
+        "id": "fc20fc081097ba83",
+        "type": "Oracle Connection",
+        "name": "",
+        "server": "172.17.0.1",
+        "port": 1521,
+        "database": "XE",
+        "poolMin": "10",
+        "poolMax": "10",
+        "poolPingInterval": "30",
+        "poolPingTimeout": "5",
+        "connectionRetryInterval": "30000"
+    }
+]

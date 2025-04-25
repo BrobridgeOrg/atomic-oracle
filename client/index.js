@@ -66,8 +66,8 @@ module.exports = class Client extends events.EventEmitter {
 			poolTimeout: this.poolOpts.poolTimeout,
 			poolPingInterval: this.poolOpts.poolPingInterval, //default
 			poolPingTimeout: this.poolOpts.poolPingTimeout, //default
-			//queueMax: 100,
-			//queueTimeout: 500,
+			queueMax: 100,
+			queueTimeout: 15000,
 
 		};
 
@@ -79,36 +79,65 @@ module.exports = class Client extends events.EventEmitter {
 	}
 
 	async getConn() {
-		return await this.pool.getConnection()
+		let conn = await this.pool.getConnection()
+		conn.callTimeout = 1000;
+		return conn
 	}
 
 	connect() {
+		//console.debug("[oracle-client] Initiating connection test...");
+
+		// 若已有 timer 正在等待，先清除
+		if (this.timer) {
+			clearTimeout(this.timer);
+			this.timer = null;
+		}
 
 		this.pool.getConnection()
-			.then((conn) => {
-				conn.callTimeout = 500;
-				conn.close().then(() =>{
-				});
-				this.emit('connected');
+			.then(async (conn) => {
+				try {
+					//conn.callTimeout = 500;
+					await conn.close();
+					this.emit('connected');
+				} catch (closeErr) {
+					console.warn("[oracle-client] Connection test succeeded but close failed:", closeErr);
+					this.emit('connected'); // 即使 close 錯，仍算 connected
+				}
 			})
 			.catch((e) => {
+				console.warn("[oracle-client] Connection failed. Will retry in", this.opts.connectionRetryInterval, "ms");
 
-				// Reconnecting
 				this.timer = setTimeout(() => {
-					this.emit('reconnect')
+					this.emit('reconnect');
 					this.connect();
 				}, this.opts.connectionRetryInterval);
 			});
-
-		clearTimeout(this.timer);
-	};
+	}
 
 	async disconnect() {
+		clearTimeout(this.timer);
+
+		const forceExit = setTimeout(() => {
+			console.warn("[oracle-client] Force shutdown due to stuck pool.close()");
+			process.exit(0);
+		}, 15000); // fallback 防止永遠卡死
+
 		try {
-			await this.pool.close(0); // 30 seconds timeout for graceful termination
-		}catch(e){
-			throw e;
+
+			//console.log('[oracle-client] Pool connections in use:', this.pool.connectionsInUse);
+			// Wait a little to avoid Oracle internal close bug
+			await new Promise(resolve => setTimeout(resolve, 100));
+
+			await this.pool.close(0);
+			console.log('[oracle-client] Pool closed successfully.');
+			this.pool = null;
+		} catch (e) {
+			console.warn('[oracle-client] Pool close failed:', e);
+		} finally {
+			clearTimeout(forceExit);
+			this.emit("disconnect");
+			this.removeAllListeners();
+			console.log("[oracle-client] Cleaned up listeners and pool.");
 		}
-	    	this.emit("disconnect");
-	};
+	}
 };

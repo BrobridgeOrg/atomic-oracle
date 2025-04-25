@@ -193,14 +193,11 @@
 						if (!data.success) {
 							$('#node-playground-result-message')
 								.append($('<div>').text('Finished with error.'))
-								.append($('<div>').text([
-									'Msg ' + data.error.number,
-									'Level ' + data.error.class,
-									'State ' + data.error.state,
-								].join(',')))
-								.append($('<div>').text('Line ' + data.error.lineNumber + ': ' + data.error.message))
+								.append($('<div>').text('Msg: ' + data.error.message))
+								.append($('<div>').text('Code: ' + data.error.code))
+								.append($('<div>').text('LineNumber: ' + data.error.lineNumber))
+								.append($('<div>').text('Stack: ' + data.error.stack))
 								.show();
-
 							return;
 						}
 
@@ -411,5 +408,38 @@
 </script>
 
 <script type="text/html" data-help-name="Oracle Execute">
-	<p>Execute queries in Oracle Database</p>
+    <p>This node executes SQL queries on a configured Oracle database. It supports both static and dynamic SQL commands, and allows output customization.</p>
+
+    <h4>Configuration Options</h4>
+    <ul>
+        <li><strong>Name</strong>: Node label</li>
+        <li><strong>Connection</strong>: Select an existing Oracle Connection</li>
+        <li><strong>Output Property</strong>: Message property to store result (e.g., <code>msg.payload</code>)</li>
+        <li><strong>Query Source</strong>:
+            <ul>
+                <li><code>auto</code>: Uses <code>msg.query</code> if available; otherwise uses static SQL.</li>
+                <li><code>static</code>: Always uses the static SQL defined in the node.</li>
+                <li><code>dynamic</code>: Uses <code>msg.query</code> only. Skips if <code>msg.query</code> is empty.</li>
+            </ul>
+        </li>
+        <li><strong>SQL Command</strong>: Default SQL query. Supports templating via <code>${msg.payload.xxx}</code></li>
+    </ul>
+
+    <h4>Output Format</h4>
+    <p>On success, the result is placed in the specified output property:</p>
+    <pre><code>{
+  results: [ ... ],
+  rowsAffected: 1
+}</code></pre>
+
+    <p>On failure, an <code>error</code> object will be added to the message:</p>
+    <pre><code>{
+  error: {
+    code,
+    message,
+    stack,
+    lineNumber
+  }
+}</code></pre>
 </script>
+

@@ -20,6 +20,7 @@
   "author": "Jhe Sue <jhe@brobridge.com>",
   "license": "APL",
   "node-red": {
+    "version": ">=2.0.0",
     "nodes": {
       "oracle-connection": "oracle-connection.js",
       "oracle-execute": "oracle-execute.js"
@@ -27,5 +28,8 @@
   },
   "dependencies": {
     "oracledb": "^6.8.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

@@ -42,14 +42,9 @@ module.exports = function (RED) {
                 this.status = 'reconnecting';
                 node.log('Reconnecting to server: ' + node.connConfig.server + ':' + node.connConfig.port);
             });
-            this.client.on('connected', (err) => {
-                if (err) {
-                    node.log('Failed to connect to Oracle Database: ' + err)
-                    this.status = 'disconnected';
-                    return
-                }
+            this.client.on('connected', () => {
                 node.log('Connected to Oracle Database: ' + node.connConfig.server + ':' + node.connConfig.port);
-                    node.log("Connection pool initialized.");
+                node.log("Connection pool initialized.");
                 this.status = 'connected';
             });
             this.client.on('error', (err) => {
@@ -57,6 +52,8 @@ module.exports = function (RED) {
             });
             node.log('Connecting to Oracle Database: ' + node.connConfig.server + ':' + node.connConfig.port);
             this.client.connect();
+
+            // Proxy methods
             this.getPool = function() {
                 return node.client.getPool();
             };
@@ -64,13 +61,13 @@ module.exports = function (RED) {
                 return await node.client.getConn();
             };
 	
-            node.on('close', async function() {
-		    try{
-			    await node.client.disconnect();
-		    }catch(e){
-			    console.log(e);
-		    }
-            })
+            // Close handler
+            node.on('close', function() {
+                node.client.disconnect().catch((e) => {
+                    console.error('[oracle-client] Disconnect error:', e);
+                });
+            });
+
         }).catch((err) => {
             console.error("Failed to initialize connection pool:", err);
         });
