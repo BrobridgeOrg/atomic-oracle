@@ -7,6 +7,8 @@ module.exports = class Client extends events.EventEmitter {
 	constructor(conn = null, opts = {}) {
 		super();
 
+		// INSERT_YOUR_CODE
+		// Note: Developers can modify the Oracle driver location here during development
 		oracledb.initOracleClient({ libDir: "/usr/lib/instantclient" });
 		oracledb.autoCommit = true;
 		oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
